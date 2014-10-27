@@ -1,0 +1,14 @@
+CREATE TABLE [dbo].[tbl_MARXCOB_DTL](
+	[MARXCOBDTLId] [int] IDENTITY(1,1) NOT NULL,
+	[RecordType] [varchar](3) NULL,
+	[HICN/RRBNumber] [varchar](12) NULL,
+	[SSN] [varchar](9) NULL,
+	[DateofBirth] [varchar](8) NULL,
+	[GenderCode] [varchar](1) NULL,
+	[ContractNumber] [varchar](5) NULL,
+	[PlanBenefitPackage] [varchar](3) NULL,
+	[ActionType] [varchar](1) NULL,
+	[Filler01] [varchar](1058) NULL,
+	[DataImported] [datetime] NOT NULL,
+	[FileName] [varchar](128) NOT NULL
+) ON [PRIMARY]
