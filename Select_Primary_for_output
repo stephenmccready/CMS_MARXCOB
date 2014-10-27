@@ -1,0 +1,261 @@
+SELECT Rtrim([RecordType]) As [RecordType]
+      ,Rtrim([HICN/RRBNumber]) As [HICN_RRBNumber]
+	  ,Cast(Case	When [SSN] = '         ' Then 'unknown    '
+	        When [SSN] = '000000000' Then 'unknown    '
+		  	Else SubString([SSN],1,3) +'-'+ SubString([SSN],4,2)+'-'+SubString([SSN],6,4) End As VarChar(11)) As [SSN] 
+      ,Cast(Case When [DateofBirth] = '        ' Then '          '
+	             When [DateofBirth] = '00000000' Then '          '
+		  	     Else SubString([DateofBirth],1,4) +'-'+ SubString([DateofBirth],5,2)+'-'+SubString([DateofBirth],7,2) End As VarChar(10)) As [DateofBirth] 
+      ,Cast(Case  When [GenderCode] = '0' Then 'Unknown'
+	        When [GenderCode] = '1' Then 'Male   '
+			When [GenderCode] = '2' Then 'Female '
+			End As VarChar(7)) As [GenderCode] 
+      ,Rtrim([RxIDNumber]) As [RxIDNumber]
+      ,Rtrim([RxGroupNumber]) As [RxGroupNumber]
+      ,Rtrim([RxBINNumber]) As [RxBINNumber]
+      ,Rtrim([RxPCNNumber]) As [RxPCNNumber]
+	  ,Cast(Case  When SubString([RxPlanTollFreeNumber],1,1) <> '1' And SubString([RxPlanTollFreeNumber],4,1) <> '-' and SubString([RxPlanTollFreeNumber],1,1) <> ' ' and SubString([RxPlanTollFreeNumber],1,1) <> '('
+	                Then '1-('+SubString([RxPlanTollFreeNumber],1,3)+')-'+SubString([RxPlanTollFreeNumber],4,3)+'-'+SubString([RxPlanTollFreeNumber],7,4)
+			      When SubString([RxPlanTollFreeNumber],1,1) <> '1' And SubString([RxPlanTollFreeNumber],4,1) = '-' and SubString([RxPlanTollFreeNumber],1,1) <> ' ' and SubString([RxPlanTollFreeNumber],1,1) <> '('
+	                Then '1-('+SubString([RxPlanTollFreeNumber],1,3)+')-'+SubString([RxPlanTollFreeNumber],5,3)+'-'+SubString([RxPlanTollFreeNumber],9,4) 
+                  When SubString([RxPlanTollFreeNumber],1,2) = '1-' And SubString([RxPlanTollFreeNumber],3,1) <> '(' and SubString([RxPlanTollFreeNumber],1,1) <> ' ' and SubString([RxPlanTollFreeNumber],1,1) <> '('
+	                Then '1-('+SubString([RxPlanTollFreeNumber],3,3)+')-'+SubString([RxPlanTollFreeNumber],7,3)+'-'+SubString([RxPlanTollFreeNumber],11,4)
+				  When SubString([RxPlanTollFreeNumber],1,1) = '(' And SubString([RxPlanTollFreeNumber],5,1) = ')' and SubString([RxPlanTollFreeNumber],1,1) <> ' ' 
+	                Then '1-('+SubString([RxPlanTollFreeNumber],2,3)+')-'+SubString([RxPlanTollFreeNumber],7,3)+'-'+SubString([RxPlanTollFreeNumber],11,4) 
+                   When SubString([RxPlanTollFreeNumber],1,1) = '(' And SubString([RxPlanTollFreeNumber],14,1) = ')' and SubString([RxPlanTollFreeNumber],1,1) <> ' ' 
+	                Then '1-('+SubString([RxPlanTollFreeNumber],2,3)+')-'+SubString([RxPlanTollFreeNumber],6,3)+'-'+SubString([RxPlanTollFreeNumber],10,4)
+				   When SubString([RxPlanTollFreeNumber],1,2) = '1(' And SubString([RxPlanTollFreeNumber],6,1) = ')' and SubString([RxPlanTollFreeNumber],1,1) <> ' ' 
+	                Then '1-('+SubString([RxPlanTollFreeNumber],3,3)+')-'+SubString([RxPlanTollFreeNumber],7,3)+'-'+SubString([RxPlanTollFreeNumber],11,4) 	  
+				  Else [RxPlanTollFreeNumber]	  
+            End As VarChar(16)) As [RxPlanTollFreeNumber]
+	  ,Rtrim([SequenceNumber]) As [SequenceNumber]
+	  ,Cast(Case  When [COBSourceCode] = '11100' Then '11100 Non Payment/Payment Denial                       '
+	              When [COBSourceCode] = '11101' Then '11101 IEQ                                              '
+			      When [COBSourceCode] = '11102' Then '11102 Data Match                                       '
+				  When [COBSourceCode] = '11103' Then '11103 HMO                                              '
+			      When [COBSourceCode] = '11104' Then '11104 Litigation Settlement BCBS                       '
+				  When [COBSourceCode] = '11105' Then '11105 Employer Voluntary Reporting                     '
+			      When [COBSourceCode] = '11106' Then '11106 Insurer Voluntary Reporting                      '
+				  When [COBSourceCode] = '11107' Then '11107 First Claim Development                          '
+			      When [COBSourceCode] = '11108' Then '11108 Trauma Code Development                          '
+				  When [COBSourceCode] = '11109' Then '11109 Secondary Claims Investigation                   '
+			      When [COBSourceCode] = '11110' Then '11110 Self Report                                      '
+				  When [COBSourceCode] = '11111' Then '11111 411.25                                           '
+			      When [COBSourceCode] = '11112' Then '11112 BCBS Voluntary Agreements                        '
+				  When [COBSourceCode] = '11113' Then '11113 Office of Personnel Management (OPM) Data Match  '
+			      When [COBSourceCode] = '11114' Then '11114 Workers Compensation Data Match                  '
+				  When [COBSourceCode] = '11118' Then '11118 Pharmacy Benefit Manager (PBM)                   '
+			      When [COBSourceCode] = '11120' Then '11120 COBA                                             '
+				  When [COBSourceCode] = '11125' Then '11125 Recovery Audit Contractor (RAC) 1 (April Release)'
+			      When [COBSourceCode] = '11126' Then '11126 RAC 2 (April Release)                            '
+				  When [COBSourceCode] = '11127' Then '11127 RAC 3 (April Release)                            '
+			      When [COBSourceCode] = 'P0000' Then 'P0000 PBM                                              '
+				  When [COBSourceCode] = 'S0000' Then 'S0000 Assistance Program                               '
+			                                     Else 'Contractor numbers 11100 - 11199 are reserved for COB  '
+			End As VarChar(55)) As [COBSourceCode] 
+      ,Cast(Case  When [MSPReason] = 'A' Then 'Working Aged                  '
+	              When [MSPReason] = 'B' Then 'ESRD                          '
+			      When [MSPReason] = 'C' Then 'Conditional Payment           '
+				  When [MSPReason] = 'D' Then 'Automobile Insurance, No fault'
+			      When [MSPReason] = 'E' Then 'Workers Compensation          '
+				  When [MSPReason] = 'F' Then 'Federal (public)              '
+			      When [MSPReason] = 'G' Then 'Disabled                      '
+				  When [MSPReason] = 'H' Then 'Black Lung                    '              
+			      When [MSPReason] = 'I' Then 'Veterans                      '
+				  When [MSPReason] = 'L' Then 'Liability                     '
+			End As VarChar(30)) As [MSPReason] 
+      ,Cast(Case  When [CoverageCode] = 'A' Then 'Hospital and Medical                                      '
+	              When [CoverageCode] = 'U' Then 'Drug (network benefit)                                    '
+			      When [CoverageCode] = 'V' Then 'Drug with Major Medical (non-network benefit)             '
+				  When [CoverageCode] = 'W' Then 'Comprehensive, Hospital, Medical, Drug (network)          '
+			      When [CoverageCode] = 'X' Then 'Hospital and Drug (network)                               '
+				  When [CoverageCode] = 'Y' Then 'Medical and Drug (network)                                '
+			      When [CoverageCode] = 'Z' Then 'Health Reimbursement Account (hospital, medical, and drug)'
+			End As VarChar(58)) As [CoverageCode]  
+      ,Rtrim([InsurersName]) As [InsurersName]
+      ,Rtrim([InsurersAddress-1]) As [InsurersAddress_1]
+      ,Rtrim([InsurersAddress-2]) As [InsurersAddress_2]
+      ,Rtrim([InsurersCity]) As [InsurersCity]
+      ,Rtrim([InsurersState]) As [InsurersState]
+	  ,Cast(Case  When SubString([InsurersZipCode],6,4) = '    ' Then [InsurersZipCode]
+	        When SubString([InsurersZipCode],6,4) = '0000' Then SubString([InsurersZipCode],1,5)+'    '
+			When [InsurersZipCode] = '000000000' Then '          '
+			When SubString([InsurersZipCode],6,4) <> '0000'AND SubString([InsurersZipCode],6,4) <> '    ' Then SubString([InsurersZipCode],1,5)+'-'+SubString([InsurersZipCode],6,4)
+		  	End As VarChar(10)) As [InsurersZipCode] 
+      ,Rtrim([InsurerTIN]) As [InsurerTIN]
+      ,Rtrim([IndividualPolicyNumber]) As [IndividualPolicyNumber]
+      ,Rtrim([GroupPolicyNumber]) As [GroupPolicyNumber]
+	  ,Cast(Case When [SubmittedEffectiveDate] = '        ' Then '          '
+	             When [SubmittedEffectiveDate] = '00000000' Then '          '
+		  	     Else SubString([SubmittedEffectiveDate],1,4) +'-'+ SubString([SubmittedEffectiveDate],5,2)+'-'+SubString([SubmittedEffectiveDate],7,2) End As VarChar(10)) As [SubmittedEffectiveDate]
+      ,Cast(Case When [TerminationDate] = '        ' Then '          '
+	             When [TerminationDate] = '00000000' Then '          '
+		  	     Else SubString([TerminationDate],1,4) +'-'+ SubString([TerminationDate],5,2)+'-'+SubString([TerminationDate],7,2) End As VarChar(10)) As [TerminationDate]
+      ,Cast(Case When [RelationshipCode] = '01' Then 'Bene is Policy Holder'
+	             When [RelationshipCode] = '02' Then 'Spouse               '
+			     When [RelationshipCode] = '03' Then 'Child                '
+				 When [RelationshipCode] = '04' Then 'Other                '
+			End As VarChar(21)) As [RelationshipCode]  
+      ,Rtrim([PayerID]) As [PayerID]
+      ,Rtrim([PersonCode]) As [PersonCode]
+      ,Rtrim([PayerOrder]) As [PayerOrder]
+      ,Rtrim([PolicyHoldersFirstName]) As [PolicyHoldersFirstName]
+      ,Rtrim([PolicyHoldersLastName]) As [PolicyHoldersLastName]
+      ,Rtrim([PolicyHoldersSSN]) As [PolicyHoldersSSN]
+	  ,Cast(Case When [EmployeeInformationCode] = 'P' Then 'Patient'
+	             When [EmployeeInformationCode] = 'S' Then 'Spouse '
+			     When [EmployeeInformationCode] = 'M' Then 'Mother '
+				 When [EmployeeInformationCode] = 'F' Then 'Father '
+			End As VarChar(7)) As [EmployeeInformationCode]  
+      ,Rtrim([EmployersName]) As [EmployersName]
+      ,Rtrim([EmployersAddress1]) As [EmployersAddress1]
+      ,Rtrim([EmployersAddress2]) As [EmployersAddress2]
+      ,Rtrim([EmployersCity]) As [EmployersCity]
+      ,Rtrim([EmployersState]) As [EmployersState]
+      ,Cast(Case  When SubString([EmployersZipCode],6,4) = '    ' Then [EmployersZipCode]
+	        When SubString([EmployersZipCode],6,4) = '0000' Then SubString([EmployersZipCode],1,5)+'    '
+			When [EmployersZipCode] = '000000000' Then '          '
+			When SubString([EmployersZipCode],6,4) <> '0000'AND SubString([EmployersZipCode],6,4) <> '    ' Then SubString([EmployersZipCode],1,5)+'-'+SubString([EmployersZipCode],6,4)
+		  	End As VarChar(10)) As [EmployersZipCode] 
+      ,Rtrim([EmployerTIN]) As [EmployerTIN]
+      ,Rtrim([ClaimDiagnosisCode-1]) As [ClaimDiagnosisCode_1]
+      ,Rtrim([ClaimDiagnosisCode-2]) As [ClaimDiagnosisCode_2]
+      ,Rtrim([ClaimDiagnosisCode-3]) As [ClaimDiagnosisCode_3]
+      ,Rtrim([ClaimDiagnosisCode-4]) As [ClaimDiagnosisCode_4]
+      ,Rtrim([ClaimDiagnosisCode-5]) As [ClaimDiagnosisCode_5]
+      ,Rtrim([AttorneysName]) As [AttorneysName]
+      ,Rtrim([AttorneysAddress1]) As [AttorneysAddress1]
+      ,Rtrim([AttorneysAddress2]) As [AttorneysAddress2]
+      ,Rtrim([AttorneysCity]) As [AttorneysCity]
+      ,Rtrim([AttorneysState]) As [AttorneysState]
+	  ,Cast(Case  When SubString([AttorneysZip],6,4) = '    ' Then [AttorneysZip]
+	        When SubString([AttorneysZip],6,4) = '0000' Then SubString([AttorneysZip],1,5)+'    '
+			When [AttorneysZip] = '000000000' Then '          '
+			When SubString([AttorneysZip],6,4) <> '0000'AND SubString([AttorneysZip],6,4) <> '    ' Then SubString([AttorneysZip],1,5)+'-'+SubString([AttorneysZip],6,4)
+		  	End As VarChar(10)) As [AttorneysZip] 
+      ,Rtrim([LeadContractor]) As [LeadContractor]
+      ,Rtrim([ClassActionType]) As [ClassActionType]
+      ,Rtrim([AdministratorName]) As [AdministratorName]
+      ,Rtrim([AdministratorAddress1]) As [AdministratorAddress1]
+      ,Rtrim([AdministratorAddress2]) As [AdministratorAddress2]
+      ,Rtrim([AdministratorCity]) As [AdministratorCity]
+      ,Rtrim([AdministratorState]) As [AdministratorState]
+	  ,Cast(Case  When SubString([AdministratorZip],6,4) = '    ' Then [AdministratorZip]
+	        When SubString([AdministratorZip],6,4) = '0000' Then SubString([AdministratorZip],1,5)+'    '
+			When [AdministratorZip] = '000000000' Then '          '
+			When SubString([AdministratorZip],6,4) <> '0000'AND SubString([AdministratorZip],6,4) <> '    ' Then SubString([AdministratorZip],1,5)+'-'+SubString([AdministratorZip],6,4)
+		  	End As VarChar(10)) As [AdministratorZip] 
+      ,Rtrim([WCSAAmount]) As [WCSAAmount]
+      ,Rtrim([WCSAIndicator]) As [WCSAIndicator]
+	  ,Cast(Case When [WCMSASettlementDate] = '        ' Then '          '
+	             When [WCMSASettlementDate] = '00000000' Then '          '
+		  	     Else SubString([WCMSASettlementDate],1,4) +'-'+ SubString([WCMSASettlementDate],5,2)+'-'+SubString([WCMSASettlementDate],7,2) End As VarChar(10)) As [WCMSASettlementDate]
+      ,Rtrim([AdministratorsTelephoneNumber]) As [AdministratorsTelephoneNumber]
+      ,Rtrim([TotalRxSettlementAmount]) As [TotalRxSettlementAmount]
+	  ,Cast(Case When [RxDolincludedintheWCMSASettlementAmount] = 'Y' Then 'Yes'
+	             When [RxDolincludedintheWCMSASettlementAmount] = 'N' Then 'No '
+			End As VarChar(3)) As [RxDolincludedintheWCMSASettlementAmount]
+      ,Cast(Case When [DiagnosisIndicator1] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator1] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator1]  		
+	  ,Rtrim([ClaimDiagnosisCode1]) As [ClaimDiagnosisCode1]
+	  ,Cast(Case When [DiagnosisIndicator2] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator2] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator2]  		
+	  ,Rtrim([ClaimDiagnosisCode2]) As [ClaimDiagnosisCode2]
+	  ,Cast(Case When [DiagnosisIndicator3] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator3] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator3]  		
+	  ,Rtrim([ClaimDiagnosisCode3]) As [ClaimDiagnosisCode3]
+	  ,Cast(Case When [DiagnosisIndicator4] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator4] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator4]  		
+	  ,Rtrim([ClaimDiagnosisCode4]) As [ClaimDiagnosisCode4]
+	  ,Cast(Case When [DiagnosisIndicator5] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator5] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator5]  		
+      ,Rtrim([ClaimDiagnosisCode5]) As [ClaimDiagnosisCode5]
+	  ,Cast(Case When [DiagnosisIndicator6] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator6] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator6]  		
+	  ,Rtrim([ClaimDiagnosisCode6]) As [ClaimDiagnosisCode6]
+	  ,Cast(Case When [DiagnosisIndicator7] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator7] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator7]  		
+	  ,Rtrim([ClaimDiagnosisCode7]) As [ClaimDiagnosisCode7]
+	  ,Cast(Case When [DiagnosisIndicator8] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator8] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator8]  		
+	  ,Rtrim([ClaimDiagnosisCode8]) As [ClaimDiagnosisCode8]
+	  ,Cast(Case When [DiagnosisIndicator9] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator9] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator9]  		
+	  ,Rtrim([ClaimDiagnosisCode9]) As [ClaimDiagnosisCode9]
+	  ,Cast(Case When [DiagnosisIndicator10] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator10] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator10]  		
+      ,Rtrim([ClaimDiagnosisCode10]) As [ClaimDiagnosisCode10]
+	  ,Cast(Case When [DiagnosisIndicator11] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator11] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator11]  		
+	  ,Rtrim([ClaimDiagnosisCode11]) As [ClaimDiagnosisCode11]
+	  ,Cast(Case When [DiagnosisIndicator12] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator12] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator12]  		
+	  ,Rtrim([ClaimDiagnosisCode12]) As [ClaimDiagnosisCode12]
+	  ,Cast(Case When [DiagnosisIndicator13] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator13] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator13]  		
+	  ,Rtrim([ClaimDiagnosisCode13]) As [ClaimDiagnosisCode13]
+	  ,Cast(Case When [DiagnosisIndicator14] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator14] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator14]  		
+	  ,Rtrim([ClaimDiagnosisCode14]) As [ClaimDiagnosisCode14]
+	  ,Cast(Case When [DiagnosisIndicator15] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator15] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator15]  		
+      ,Rtrim([ClaimDiagnosisCode15]) As [ClaimDiagnosisCode15]
+	  ,Cast(Case When [DiagnosisIndicator16] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator16] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator16]  		
+	  ,Rtrim([ClaimDiagnosisCode16]) As [ClaimDiagnosisCode16]
+	  ,Cast(Case When [DiagnosisIndicator17] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator17] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator17]  		
+	  ,Rtrim([ClaimDiagnosisCode17]) As [ClaimDiagnosisCode17]
+	  ,Cast(Case When [DiagnosisIndicator18] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator18] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator18]  		
+	  ,Rtrim([ClaimDiagnosisCode18]) As [ClaimDiagnosisCode18]
+	  ,Cast(Case When [DiagnosisIndicator19] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator19] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator19]  		
+	  ,Rtrim([ClaimDiagnosisCode19]) As [ClaimDiagnosisCode19]
+	  ,Cast(Case When [DiagnosisIndicator20] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator20] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator20]  		
+      ,Rtrim([ClaimDiagnosisCode20]) As [ClaimDiagnosisCode20]
+	  ,Cast(Case When [DiagnosisIndicator21] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator21] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator21]  		
+	  ,Rtrim([ClaimDiagnosisCode21]) As [ClaimDiagnosisCode21]
+	  ,Cast(Case When [DiagnosisIndicator22] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator22] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator22]  		
+	  ,Rtrim([ClaimDiagnosisCode22]) As [ClaimDiagnosisCode22]
+	  ,Cast(Case When [DiagnosisIndicator23] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator23] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator23]  		
+	  ,Rtrim([ClaimDiagnosisCode23]) As [ClaimDiagnosisCode23]
+	  ,Cast(Case When [DiagnosisIndicator24] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator24] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator24]  		
+	  ,Rtrim([ClaimDiagnosisCode24]) As [ClaimDiagnosisCode24]
+	  ,Cast(Case When [DiagnosisIndicator25] = '9' Then 'ICD9: '
+	             When [DiagnosisIndicator25] = '0' Then 'ICD10:'
+			End As VarChar(6)) As [DiagnosisIndicator25]  		
+      ,Rtrim([ClaimDiagnosisCode25]) As [ClaimDiagnosisCode25]
+      ,Rtrim([DataImported]) As [DataImported]
+      ,Rtrim([FileName]) As [FileName]
+  FROM [dbo].[tbl_MARXCOB_PRM]
+  Where [HICN/RRBNumber] <> ''
