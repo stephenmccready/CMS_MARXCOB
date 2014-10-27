@@ -1,0 +1,20 @@
+Select   Rtrim([RecordType]) As [RecordType]
+		,Rtrim([HICN/RRBNumber]) As [HICN_RRBNumber]
+		,Cast(Case When [SSN] = '         ' Then 'unknown    '
+	        When [SSN] = '000000000' Then 'unknown    '
+		  	Else SubString([SSN],1,3) +'-'+ SubString([SSN],4,2)+'-'+SubString([SSN],6,4) End As VarChar(11)) As [SSN] 
+		,Cast(Case When [DateofBirth] = '        ' Then '          '
+	             When [DateofBirth] = '00000000' Then '          '
+		  	     Else SubString([DateofBirth],1,4) +'-'+ SubString([DateofBirth],5,2)+'-'+SubString([DateofBirth],7,2) End As VarChar(10)) As [DateofBirth] 
+		,Cast(Case When [GenderCode] = '0' Then 'Unknown'
+	        When [GenderCode] = '1' Then 'Male   '
+			When [GenderCode] = '2' Then 'Female '
+			End As VarChar(7)) As [GenderCode] 
+		,Rtrim([ContractNumber]) As [ContractNumber]
+		,Rtrim([PlanBenefitPackage]) As [PlanBenefitPackage]
+		,Cast(Case	When [ActionType] = '2' Then 'Full replacement'
+	               	Else '                ' End As VarChar(16)) As [ActionType] 
+		,Rtrim([DataImported]) As [DataImported]
+		,Rtrim([FileName]) As [FileName]
+From	[dbo].[tbl_MARXCOB_DTL]
+Where	[HICN/RRBNumber] <> ''
